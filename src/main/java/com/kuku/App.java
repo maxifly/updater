@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 public class App {
     public static String OLD = "old";
     public static String NEW = "new";
+    public static String EXECUTE = "execute";
 
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, InterruptedException {
         System.out.println("kuku");
@@ -42,7 +44,9 @@ public class App {
             if (!arguments.containsKey(NEW)) {
                 throw new ErrorParameters("Can not found new key.");
             }
-
+            if (!arguments.containsKey(EXECUTE)) {
+                throw new ErrorParameters("Can not found execute key.");
+            }
 
             // Проверки пройдены
             //Сохранение старых файлов
@@ -85,8 +89,9 @@ public class App {
                     }
 
                     if (!copyNew) {
-                        System.out.println("Try copy " + newSrc.toString() + " to " + oldSrc.toString());
-                        Files.copy(newSrc.toPath(), oldSrc.toPath());
+                        File newDest = new File(oldSrc.toPath().getParent().toString(), newSrc.getName());
+                        System.out.println("Try copy " + newSrc.toString() + " to " + newDest.toString());
+                        Files.copy(newSrc.toPath(), newDest.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         System.out.println(newSrc.toString() + " copied");
                         copyNew = true;
                         break;
@@ -106,7 +111,9 @@ public class App {
             }
 
 
-
+            // Запуск приложения
+            Runtime runtime = Runtime.getRuntime();
+            runtime.exec(arguments.get(EXECUTE));
 
             //   MainFrame mf = factory.getMainFrame();
 
@@ -114,10 +121,14 @@ public class App {
 
         } catch (ErrorParameters | ErrorTimeout errorParameters) {
             System.out.println(errorParameters.getMessage());
+            Thread.sleep(10000);
         } catch (IOException e) {
             e.printStackTrace();
+            Thread.sleep(10000);
         }
         System.out.println("tutu");
+
+
 
     }
 
