@@ -89,7 +89,7 @@ public class App {
                     }
 
                     if (!copyNew) {
-                        File newDest = new File(oldSrc.toPath().getParent().toString(), newSrc.getName());
+                        File newDest = oldSrc; //new File(oldSrc.toPath().getParent().toString(), newSrc.getName());
                         System.out.println("Try copy " + newSrc.toString() + " to " + newDest.toString());
                         Files.copy(newSrc.toPath(), newDest.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         System.out.println(newSrc.toString() + " copied");
